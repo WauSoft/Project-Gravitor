@@ -6,6 +6,7 @@ public class Player : MonoBehaviour {
 
     public float maxSpeed = .2f;
     public float speedIncrease = 10f;
+    public float speedDecrease = 2.5f;
 
     private Rigidbody2D _rb;
     private Vector2 _direction;
@@ -25,6 +26,7 @@ public class Player : MonoBehaviour {
         var dir = new Vector2(hor, ver);
 
         ThrusterMove(dir);
+        MovementFalloff();
 	}
 
     /// <summary>
@@ -36,5 +38,16 @@ public class Player : MonoBehaviour {
     {
         // TODO: Add speed cap
         _rb.AddForce(direction * speedIncrease);
+    }
+
+    /// <summary>
+    /// Describes the way the PC in motion will slowly slow down over time due to "drag".
+    /// It works as a relative force that pushes back against the player's direction, 
+    /// slowly bringing them to a halt
+    /// </summary>
+    void MovementFalloff()
+    {
+        var oppositeForce = -_rb.velocity / speedDecrease;
+        _rb.AddRelativeForce(oppositeForce);
     }
 }
